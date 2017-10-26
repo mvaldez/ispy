@@ -19,9 +19,9 @@ Options:
     interval: wait time in minutes between tests
 """
 
-SPEED_MARGIN_OF_ERROR = 3   # the margin in which your internet can be slower than you pay for
-EXPECTED_UP = 180           # expected upload speed in Mbps
-EXPECTED_DOWN = 180         # expected download speed in Mbps
+SPEED_MARGIN_OF_ERROR = 3  # the margin in which your internet can be slower than you pay for
+EXPECTED_UP = 180  # expected upload speed in Mbps
+EXPECTED_DOWN = 180  # expected download speed in Mbps
 LOG_FILE = 'isp-spy.csv'
 
 
@@ -37,8 +37,8 @@ def print_sys_info():
 
 def main(args):
     if args.header:
-        logging.info("timestamp, id, sponsor, host, server, latency, ping, "
-                     "download Mbit/s, upload Mbit/s, bytes_sent, bytes_received")
+        logging.info("timestamp,id,sponsor,host,city,state,latency,ping,"
+                     "download,upload,bytes_sent,bytes_received")
     while True:
         print('Testing speeds...')
         s = speedtest.Speedtest()
@@ -53,9 +53,15 @@ def main(args):
                      results['server']['latency'], results['ping'], (results['download'] / 1000.0 / 1000.0),
                      (results['upload'] / 1000.0 / 1000.0), results['bytes_sent'], results['bytes_received'])
 
-        retest_delay = args.interval
-        print("Next test in {delay} minute(s)...".format(delay=retest_delay))
-        countdown(retest_delay)
+        print("Download : {0:.3f} MB/s".format(results['download'] / 1000.0 / 1000.0))
+        print("Upload   : {0:.3f} MB/s".format(results['upload'] / 1000.0 / 1000.0))
+
+        if args.interval > 0:
+            print("Next test in {delay} minute(s)...".format(delay=args.interval))
+            countdown(args.interval)
+            print("")
+        else:
+            break
 
 
 def countdown(t):  # in minutes
@@ -79,9 +85,11 @@ def configure_options():
     parser.add_argument('--interval',
                         dest='interval',
                         type=int,
+                        default=0,
                         help='Time interval between tests in minutes')
     parser.add_argument('--header',
                         dest='header',
+                        default=False,
                         action='store_true',
                         help='Print headers to log file')
     return parser
@@ -92,9 +100,6 @@ if __name__ == '__main__':
     print('Warming up...')
     setup_logging()
     op = configure_options()
-    if len(sys.argv) == 1:
-        op.print_help()
-        sys.exit(1)
     try:
         args = op.parse_args()
         main(args)
