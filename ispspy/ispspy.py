@@ -19,10 +19,10 @@ Options:
     interval: wait time in minutes between tests
 """
 
-SPEED_MARGIN_OF_ERROR = 3  # the margin in which your internet can be slower than you pay for
-EXPECTED_UP = 180  # expected upload speed in Mbps
-EXPECTED_DOWN = 180  # expected download speed in Mbps
-LOG_FILE = 'isp-spy.csv'
+SPEED_MARGIN_OF_ERROR = 3   # the margin in which your internet can be slower than you pay for
+EXPECTED_UP = 180           # expected upload speed in Mbps
+EXPECTED_DOWN = 180         # expected download speed in Mbps
+LOG_FILE = '/Users/mv204363/Google Drive/isp-spy.csv'
 
 
 def print_sys_info():
